@@ -1,7 +1,8 @@
 <template>
   <div id="hand">
     <p v-if="username !== ''">welcome! {{ username }}</p>
-    <p v-else><button @click="login">Login</button></p>
+    <p v-else><button @click="login">Login</button>
+    <button @click="toProfile">Profile</button></p>
     <div class="img">
       <template>
         <el-carousel :interval="4000" type="card" height="450px">
@@ -89,6 +90,9 @@ export default {
     },
     login() {
       this.$router.push({path: '/login'})
+    },
+    toProfile(){
+      this.$router.push({path: '/profile', query: {cookie: "27617506156676819725"}})
     }
   },
   mounted() {
