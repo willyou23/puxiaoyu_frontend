@@ -13,19 +13,19 @@
             </div>
             <div>
               User Name
-              <el-tag style="display: flex; justify-content: left; margin-top: 10px; margin-bottom: 10px">{{this.userInfo.username}}</el-tag>
+              <el-tag style="display: flex; justify-content: left; margin-top: 10px; margin-bottom: 10px">{{'sharon'}}</el-tag>
             </div>
             <div>
               Phone Number
-              <el-tag style="display: flex; justify-content: left; margin-top: 10px; margin-bottom: 10px">{{this.userInfo.phoneNumber}}</el-tag>
+              <el-tag style="display: flex; justify-content: left; margin-top: 10px; margin-bottom: 10px">{{'15336055139'}}</el-tag>
             </div>
             <div>
               E-mail
-              <el-tag style="display: flex; justify-content: left; margin-top: 10px; margin-bottom: 10px">{{this.userInfo.email}}</el-tag>
+              <el-tag style="display: flex; justify-content: left; margin-top: 10px; margin-bottom: 10px">{{'7863718266@qq.com'}}</el-tag>
             </div>
             <div>
               Address
-              <el-tag style="display: flex; justify-content: left;margin-top: 10px; margin-bottom: 10px">{{this.userInfo.address}}</el-tag>
+              <el-tag style="display: flex; justify-content: left;margin-top: 10px; margin-bottom: 10px">{{'1234'}}</el-tag>
             </div>
 
             <div style="display: flex;justify-content: space-around; margin-top: 40px; margin-bottom: 10px ">
@@ -44,10 +44,10 @@
         <div>
           <el-form ref="form" :model="form" label-width="120px">
           <el-form-item label="User Name">
-            <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px" type="text" v-model="form.username" ></el-input>
+            <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px" type="text" v-model="form.name" ></el-input>
           </el-form-item>
           <el-form-item label="Phone Number">
-            <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px" type="text" v-model="form.phoneNumber"></el-input>
+            <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px" type="text" v-model="form.phone"></el-input>
           </el-form-item>
             <el-form-item label="E-mail">
               <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px" type="text" v-model="form.email" ></el-input>
@@ -58,8 +58,8 @@
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button  style="margin-left: 20px;margin-bottom: 8px" @click="cancelInfoEdit">Cancel</el-button>
-            <el-button  style="margin-left: 120px;margin-bottom: 8px" type="primary" @click="confirmInfoEdit">Confirm</el-button>
+            <el-button  style="margin-left: 20px;margin-bottom: 8px" @click="dialogVisible = false">Cancel</el-button>
+            <el-button  style="margin-left: 120px;margin-bottom: 8px" type="primary" @click="dialogVisible = false">Confirm</el-button>
         </span>
       </el-dialog>
 
@@ -69,7 +69,7 @@
               width="50%">
         <div>
           <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-               <el-form-item label="Old Password" prop="oldPass">
+               <el-form-item label="Old Password" prop="pass">
                   <el-input type="password" v-model="ruleForm.oldPass" autocomplete="off"></el-input>
                </el-form-item>
                <el-form-item label="New Password" prop="pass">
@@ -130,12 +130,10 @@
 </template>
 
 <script>
-  import qs from "qs";
-
   export default {
-    name: "template",
+    name: "Account",
       data(){
-        const validatePass = (rule, value, callback) => {
+        var validatePass = (rule, value, callback) => {
           if (value === '') {
             callback(new Error('Please enter the password'));
           } else {
@@ -146,7 +144,13 @@
           }
         };
 
-        const validatePass2 = (rule, value, callback) => {
+        const item = {
+          productID: '1',
+          category: '王小虎',
+          abstract: '上海市普陀区金沙江路 1518 弄',
+        };
+
+        var validatePass2 = (rule, value, callback) => {
           if (value === '') {
             callback(new Error('Please enter the password again'));
           } else if (value !== this.ruleForm.pass) {
@@ -155,18 +159,15 @@
             callback();
           }
         };
-        const item = {
-          productID: '1',
-          category: '王小虎',
-          abstract: '上海市普陀区金沙江路 1518 弄',
-        };
+
         return {
           dialogVisible: false,
           passwordDialogVisible: false,
+          tableData: Array(5).fill(item),
 
           form: {
-            username: '',
-            phoneNumber:'',
+            name: '',
+            phone:'',
             email:'',
             address:'',
           },
@@ -187,16 +188,10 @@
             oldPass: [
               { validator: validatePass, trigger: 'blur' }
             ]
-        },
-          userInfo: {
-        username: "",
-        phoneNumber: "",
-        email: "",
-        address: "",
-        cookie: "",
-        balance: ""
-      },
+        }
       };
+
+
     },
 
     methods:{
@@ -212,110 +207,20 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let params = {
-              cookie: this.userInfo.cookie,
-              password: this.ruleForm.oldPass,
-              newPassword: this.ruleForm.pass,
-      }
-      this.$axios.post('/api/resetPassword/',
-          qs.stringify(params)
-      ).then(res => {
-        const ans = JSON.parse(res.data)
-        if (ans.validation === true) {
-          this.$message.success("Password reset successfully")
-          this.$router.push({path:"/login"})
-        }else {
-          this.$message.error("Update information error:", ans.mes)
-        }
-      })
-      .catch(err=>{
-        console.log(err);
-        this.$message.error("Unknown error")
-      })
-      } else {
-          console.log('error submit!!');
-          return false;
+              alert('submit!');
+
+
+          } else {
+              console.log('error submit!!');
+              return false;
           }
         });
       },
-
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-      // cancel to update information
-      cancelInfoEdit(){
-        this.dialogVisible = false
-        this.form.username = this.userInfo.username
-        this.form.phoneNumber = this.userInfo.phoneNumber
-        this.form.email = this.userInfo.email
-        this.form.address = this.userInfo.address
-      },
-      // comfirm to update information
-      confirmInfoEdit(){
-        this.dialogVisible = false
-
-        // add judgement rule
-
-        let params = {
-        cookie: this.userInfo.cookie,
-        username: this.form.username,
-        phoneNumber: this.form.phoneNumber,
-        email: this.form.email,
-      }
-      this.$axios.post('/api/updateProfileInfo/',
-          qs.stringify(params)
-      ).then(res => {
-        // console.log(res.data)
-        const ans = JSON.parse(res.data)
-        if (ans.validation === true) {
-          this.$message.success("Update information successfully")
-          this.userInfo.username = ans.username
-          this.userInfo.phoneNumber = ans.phoneNumber
-          this.userInfo.email = ans.email
-          this.userInfo.balance = ans.balance
-          // this.userInfo.address = ans.address
-          this.form.username = this.userInfo.username
-          this.form.phoneNumber = this.userInfo.phoneNumber
-          this.form.email = this.userInfo.email
-        }else {
-          this.$message.error("Update information error")
-        }
-      })
-      .catch(err=>{
-        console.log(err);
-          this.form.username = this.userInfo.username
-          this.form.phoneNumber = this.userInfo.phoneNumber
-          this.form.email = this.userInfo.email
-      })
-      }
   },
-  mounted() {
-    if (this.$route.query.cookie !== undefined) {
-      this.userInfo.cookie = this.$route.query.cookie
-      let params = {
-        cookie: this.userInfo.cookie,
-        whole: true
-      }
-      this.$axios.post('/api/profileInfo/',
-          qs.stringify(params)
-      ).then(res => {
-        // console.log(res.data)
-        const ans = JSON.parse(res.data)
-        if (ans.validation === true) {
-          this.userInfo.username = ans.username
-          this.userInfo.phoneNumber = ans.phoneNumber
-          this.userInfo.email = ans.email
-          this.userInfo.balance = ans.balance
-          // this.userInfo.address = ans.address
-          this.form.username = this.userInfo.username
-          this.form.phoneNumber = this.userInfo.phoneNumber
-          this.form.email = this.userInfo.email
-        } else {
-          this.$message.error("Get information error")
-        }
-      })
-    }
-  }
+
   }
 </script>
 

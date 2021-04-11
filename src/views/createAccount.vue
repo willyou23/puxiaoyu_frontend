@@ -20,7 +20,7 @@
                     <el-input v-model="loginForm.password" prefix-icon="el-icon-search" type="password" placeholder="password"></el-input>
                 </el-form-item>
                 <el-form-item prop="password1">
-                    <el-input v-model="loginForm.password1" prefix-icon="el-icon-search" type="password1" placeholder="password again"></el-input>
+                    <el-input v-model="loginForm.password1" prefix-icon="el-icon-search" type="password" placeholder="password again"></el-input>
                 </el-form-item>
 <!--                &lt;!&ndash;验证码&ndash;&gt;-->
 <!--                <el-form-item prop="code">-->
@@ -57,8 +57,9 @@
                     email: [{required:true,message:'请输入email',trigger:'blur'},
                         { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' }],
                     password:[{required:true,message:'请输入密码',trigger:'blur'},
-                        { min: 6, max: 10, message: '长度在 6 到 10 个数字', trigger: 'blur' }],
-                    password1: [{required:true,message:'请输入验证码',trigger:'blur',}],
+                        { min: 6, max: 20, message: '长度在 6 到 20 个数字', trigger: 'blur' }],
+                    password1: [{required:true,message:'请再次输入密码',trigger:'blur'},
+                        { min: 6, max: 20, message: '长度在 6 到 20 个数字', trigger: 'blur' }],
                 }
             }
         },

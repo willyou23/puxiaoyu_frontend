@@ -7,6 +7,7 @@ import Login from '../views/login'
 import CreateAccount from '../views/createAccount'
 import OrderDetail from '../views/orderDetails'
 import GoodDetail from '../views/goodsDetails'
+import template from "@/views/template";
 
 Vue.use(VueRouter)
 
@@ -43,6 +44,10 @@ const routes = [
     path: '/goodsDetail',
     name: 'GoodsDetail',
     component: GoodDetail
+  },{
+    path: '/template',
+    name: 'Template',
+    component: template
   }
 ]
 

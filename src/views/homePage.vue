@@ -1,8 +1,9 @@
 <template>
   <div id="hand">
-    <p v-if="username !== ''">welcome! {{ username }}</p>
-    <p v-else><button @click="login">Login</button>
-    <button @click="toProfile">Profile</button></p>
+    <p v-if="username !== ''">welcome! {{ username }}
+      <button @click="toProfile">Profile</button>
+    </p>
+    <p v-else><button @click="login">Login</button></p>
     <div class="img">
       <template>
         <el-carousel :interval="4000" type="card" height="450px">
@@ -92,7 +93,7 @@ export default {
       this.$router.push({path: '/login'})
     },
     toProfile(){
-      this.$router.push({path: '/profile', query: {cookie: "27617506156676819725"}})
+      this.$router.push({path: '/profile', query: {cookie: this.cookie}})
     }
   },
   mounted() {
@@ -101,9 +102,10 @@ export default {
       console.log(this.$route.query.cookie)
       this.cookie = this.$route.query.cookie
       let params = {
-        cookie: this.$route.query.cookie
+        cookie: this.$route.query.cookie,
+        whole: false
       }
-      this.$axios.post('/api/getInfo1/',
+      this.$axios.post('/api/profileInfo/',
           qs.stringify(params)
       ).then(res => {
         // console.log(res.data)

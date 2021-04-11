@@ -9,8 +9,8 @@
       <tab-bar-item path="/">
         <div slot="item-text">Home Page</div>
       </tab-bar-item>
-      <tab-bar-item path="/">
-        <div slot="item-text">收藏夹</div>
+      <tab-bar-item path="/template">
+        <div slot="item-text">template</div>
       </tab-bar-item>
       <tab-bar-item path="/profile">
         <div slot="item-text">Profile</div>
