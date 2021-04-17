@@ -261,6 +261,7 @@
         username: this.form.username,
         phoneNumber: this.form.phoneNumber,
         email: this.form.email,
+        address: this.form.address
       }
       this.$axios.post('/api/updateProfileInfo/',
           qs.stringify(params)
@@ -273,7 +274,7 @@
           this.userInfo.phoneNumber = ans.phoneNumber
           this.userInfo.email = ans.email
           this.userInfo.balance = ans.balance
-          // this.userInfo.address = ans.address
+          this.userInfo.address = ans.address
           this.form.username = this.userInfo.username
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
@@ -306,7 +307,7 @@
           this.userInfo.phoneNumber = ans.phoneNumber
           this.userInfo.email = ans.email
           this.userInfo.balance = ans.balance
-          // this.userInfo.address = ans.address
+          this.userInfo.address = ans.address
           this.form.username = this.userInfo.username
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
