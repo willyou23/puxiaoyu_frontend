@@ -94,6 +94,9 @@ export default {
     },
     toProfile(){
       this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+    },
+    process(n){
+
     }
   },
   mounted() {

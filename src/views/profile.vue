@@ -1,7 +1,33 @@
 <template>
   <div>
-    <el-container style="height: 700px; border: 2px solid #eee">
+    <el-header>
+        <div style="text-align: right;margin-right: 0">
+          <el-dropdown style="float: left">
+            <el-page-header
+                    @back="goHome" style="margin-top: 20px" content="Personal Center" title="Back"></el-page-header>
+          </el-dropdown>
+          <el-dropdown>
+            <i class="el-icon-s-home" style="margin: 10px;font-size: 20px" @click="goHome"></i>
+          </el-dropdown>
+          <el-dropdown>
+            <i class="el-icon-s-promotion" style="margin: 10px;font-size: 20px"  @click="contact_us"></i>
+          </el-dropdown>
+          <el-dropdown>
+            <i class="el-icon-user" style="margin: 10px;font-size: 20px" ></i>
+            <el-dropdown-menu slot="dropdown" >
+              <el-dropdown-item>
+                <el-button size="medium" style="width: 120px" @click="login">Login</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button size="medium" style="width: 120px" @click="account">Account</el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-header>
 
+
+    <el-container style="height: 700px; border: 2px solid #eee">
       <el-aside width="500px" style="background-color: rgb(238, 241, 246)">
         <el-main>
           <el-card class="box-card" style="width: 400px;margin-left: 40px; background-color: lightblue">
@@ -146,6 +172,16 @@
           }
         };
 
+        const validatePass1 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('Please enter the password'));
+        } else if (value === this.ruleForm.oldPass)
+          callback(new Error('Can not be the same as the old pass!'));
+        else {
+          callback();
+        }
+      };
+
         const validatePass2 = (rule, value, callback) => {
           if (value === '') {
             callback(new Error('Please enter the password again'));
@@ -163,6 +199,7 @@
         return {
           dialogVisible: false,
           passwordDialogVisible: false,
+          tableData: [],
 
           form: {
             username: '',
@@ -179,7 +216,7 @@
 
           rules: {
             pass: [
-              { validator: validatePass, trigger: 'blur' }
+              { validator: validatePass1, trigger: 'blur' }
             ],
             checkPass: [
               { validator: validatePass2, trigger: 'blur' }
@@ -200,6 +237,15 @@
     },
 
     methods:{
+      goHome() {
+        this.$router.replace('/')
+      },
+      login() {
+        this.$router.replace('/login')
+      },
+      account() {
+        this.$router.replace('/profile')
+      },
       showUpdateAccountView() {
         this.dialogVisible = true;
       },
@@ -242,6 +288,18 @@
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+
+    contact_us(){
+        this.$alert('puxiaoyu@qq.com', 'E-mail', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${ action }`
+            });
+          }
+        });
+      },
       // cancel to update information
       cancelInfoEdit(){
         this.dialogVisible = false
@@ -278,6 +336,7 @@
           this.form.username = this.userInfo.username
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
+          this.form.address = this.userInfo.address
         }else {
           this.$message.error("Update information error")
         }
@@ -287,6 +346,7 @@
           this.form.username = this.userInfo.username
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
+          this.form.address = this.userInfo.address
       })
       }
   },
@@ -311,6 +371,7 @@
           this.form.username = this.userInfo.username
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
+          this.form.address = this.userInfo.address
         } else {
           this.$message.error("Get information error")
         }

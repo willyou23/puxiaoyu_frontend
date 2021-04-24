@@ -5,9 +5,12 @@ import Profile from '../views/profile'
 import ItemCard from '../views/itemCard'
 import Login from '../views/login'
 import CreateAccount from '../views/createAccount'
-import OrderDetail from '../views/orderDetails'
 import GoodDetail from '../views/goodsDetails'
-import template from "@/views/template";
+import Order from "@/views/Order_details";
+import Template from "@/views/template";
+import Trade from "@/views/Trade";
+import UploadPicture from "@/views/UploadPicture";
+import ChooseCategory from "@/views/ChooseCategory";
 
 Vue.use(VueRouter)
 
@@ -37,17 +40,33 @@ const routes = [
     name: 'CreateAccount',
     component: CreateAccount
   },{
-    path: '/orderDetail',
-    name: 'OrderDetail',
-    component: OrderDetail
-  },{
     path: '/goodsDetail',
     name: 'GoodsDetail',
     component: GoodDetail
-  },{
+  },
+  {
+    path: '/order',
+    name: 'Order',
+    component: Order
+  },
+  {
     path: '/template',
     name: 'Template',
-    component: template
+    component: Template
+  },
+  {path: '/trade',
+  name: 'Trade',
+  component: Trade
+  },
+  {
+    path: '/UploadPicture',
+    name: 'UploadPicture',
+    component: UploadPicture
+  },
+  {
+    path: '/ChooseCategory',
+    name: 'ChooseCategory',
+    component: ChooseCategory
   }
 ]
 
