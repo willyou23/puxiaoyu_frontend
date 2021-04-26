@@ -15,7 +15,7 @@ export default {
       cookie: "97705652273874709788",
       orderId: "1",
       goodsId: "1",
-      goodsId1:"10"
+      goodsId1:"14"
     }
   },
   methods:{

@@ -330,9 +330,8 @@ export default {
       ).then(res => {
         console.log(res.data)
         const ans = JSON.parse(res.data)
-        this.order_detail.payment_status = ans.validation
         this.dialogVisible_pay = false;
-        if (this.order_detail.payment_status) {//注意！！！
+        if (ans.validation) {//注意！！！
           this.$message.success(ans.mes)
         } else {
           this.$message.error(ans.mes)
@@ -456,13 +455,15 @@ export default {
       this.$axios.post('/api/order/showOrder/',
           qs.stringify(params)
       ).then(res => {
+        // console.log(res.data)
         console.log(res.data)
         const ans = JSON.parse(res.data)
         if (ans.validation === true) {
           this.goods_detail.name = ans.goodsName//产品编号，不可修改，名称在卡片处
-          this.order_detail.productNumber = ans.quantity //购买数量，未支付可修改
+          this.order_detail.productQuantity = ans.quantity //购买数量，未支付可修改
           // this.goods_detail.img = ans.img//产品第一张图片
           this.goods_detail.img = ans.img//产品第一张图片
+          console.log(ans.img[0])
           this.goods_detail.price = ans.price
           this.order_detail.date = ans.date//订单生成日期
           this.order_detail.customer = ans.customerName//消费者
