@@ -6,22 +6,22 @@
       <div style="text-align: right;margin-right: 15%">
         <el-dropdown style="float: left">
           <el-page-header
-              @back="goHome" content="Order Details" title="Back"></el-page-header>
+              @back="goHome" content="Build Order" title="Back"></el-page-header>
         </el-dropdown>
         <el-dropdown>
           <i class="el-icon-s-home" style="margin: 10px;font-size: 20px" @click="goHome"></i>
         </el-dropdown>
         <el-dropdown>
-          <i class="el-icon-s-promotion" style="margin: 10px;font-size: 20px" @click="contact_us"></i>
+          <i class="el-icon-s-promotion" style="margin: 10px;font-size: 20px"  @click="contact_us"></i>
         </el-dropdown>
         <el-dropdown>
-          <i class="el-icon-user" style="margin: 10px;font-size: 20px"></i>
-          <el-dropdown-menu slot="dropdown">
+          <i class="el-icon-user" style="margin: 10px;font-size: 20px" ></i>
+          <el-dropdown-menu slot="dropdown" >
             <el-dropdown-item>
               <el-button size="medium" style="width: 120px" @click="login">Login</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
-              <el-button size="medium" style="width: 120px" @click="account">Account</el-button>
+              <el-button size="medium" style="width: 120px" @click="profile">Profile</el-button>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -265,28 +265,28 @@ export default {
     };
   },
   methods: {
-    contact_us() {
-      this.$alert('puxiaoyu@qq.com', 'E-mail', {
-        confirmButtonText: '确定',
-        callback: action => {
-          this.$message({
-            type: 'info',
-            message: `action: ${action}`
-          });
-        }
-      });
+    goHome() {
+        this.$router.push({path: '/', query: {cookie: this.cookie}})
     },
     login() {
-      this.$router.replace('/Login')
+        this.$router.replace('/Login')
     },
-    account() {
-      this.$router.replace('/Account')
+    profile() {
+        this.$router.push({path: '/profile', query: {cookie: this.cookie}})
     },
+    contact_us(){
+          this.$alert('puxiaoyu@qq.com', 'E-mail', {
+              confirmButtonText: 'confirm',
+              callback: action => {
+                  this.$message({
+                      type: 'info',
+                      message: `action: ${ action }`
+                  });
+              }
+          });
+      },
     showProduct() {
-      this.$router.replace('/Details')
-    },
-    goHome() {
-      this.$router.replace('/')
+      this.$router.push({path: '/goodsDetail', query: {cookie: this.cookie, goodsId: this.goods_detail.id}})
     },
     modify() {
       this.dialogVisible = true;
@@ -368,33 +368,45 @@ export default {
       })
     },
     delete_order() {
-      this.$confirm('This action will permanently delete the order!!!', 'Hint', {
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      }).then(() => {
-        let params = {
-          cookie: this.cookie,
-          orderId: this.order_detail.orderID,
+  if (!this.order_detail.payment_status||this.order_detail.state) {
+    this.$confirm('This action will permanently delete the order!!!', 'Hint', {
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'Cancel',
+      type: 'warning'
+    }).then(() => {
+      let params = {
+        cookie: this.cookie,
+        orderId: this.order_detail.orderID,
+      }
+      this.$axios.post('/api/order/deleteOrder/',
+          qs.stringify(params)
+      ).then(res => {
+        const ans = JSON.parse(res.data)
+        if (ans.validation) {
+          this.$message.success(ans.mes)
+          this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+        } else {
+          this.$message.error(ans.mes)
         }
-        this.$axios.post('/api/order/deleteOrder/',
-            qs.stringify(params)
-        ).then(res => {
-          const ans = JSON.parse(res.data)
-          if (ans.validation) {
-            this.$message.success(ans.mes)
-            this.$router.push({path: '/profile', query: {cookie: this.cookie}})
-          } else {
-            this.$message.error(ans.mes)
-          }
-        })
-      }).catch(() => {
+      })
+    }).catch(() => {
+      this.$message({
+        type: 'info',
+        message: 'Cancel'
+      });
+    });
+  }else {
+    this.$alert('You can not delete this order now!', 'Hint', {
+      confirmButtonText: 'OK',
+      callback: action => {
         this.$message({
           type: 'info',
-          message: 'Cancel'
+          message: `action: ${ action }`
         });
-      });
-    },
+      }
+    });
+  }
+},
     haveGoods() {
       //已完成支付的订单才能确认收货
       if (this.order_detail.payment_status) {
@@ -459,6 +471,7 @@ export default {
         console.log(res.data)
         const ans = JSON.parse(res.data)
         if (ans.validation === true) {
+          this.goods_detail.id = ans.goodsId
           this.goods_detail.name = ans.goodsName//产品编号，不可修改，名称在卡片处
           this.order_detail.productQuantity = ans.quantity //购买数量，未支付可修改
           // this.goods_detail.img = ans.img//产品第一张图片
