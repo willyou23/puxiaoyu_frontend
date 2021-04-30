@@ -185,9 +185,8 @@
         this.dialogVisible = false;
       },
       confirmInfoEdit() {
-        this.dialogVisible = false;
         let params = {
-          goodsId: this.$route.query.goodsId,
+          goodsId: this.goodsId,
           cookie: this.cookie,
           name: this.form.productName,
           category: this.form.category,
@@ -198,9 +197,21 @@
         this.$axios.post('/api/updateGoodsInfo/',
                 qs.stringify(params)
         ).then(res => {
-          const ans = JSON.parse(res.data);
-          console.log(ans)
+          const dataDict = JSON.parse(res.data)
+          if(dataDict.validation){
+            this.seller=dataDict.seller
+            this.name = dataDict.name
+            this.price = dataDict.price
+            this.inventory = dataDict.inventory
+            this.desc = dataDict.desc
+            this.category = dataDict.category
+            this.imgList=dataDict.imgList
+            this.$message.success(dataDict.mes)
+          } else {
+            this.$message.error(dataDict.mes)
+          }
         })
+        this.dialogVisible = false;
       },
       open() {
         this.$confirm('This action will delete this post, whether to continue?', 'tip', {
@@ -208,10 +219,22 @@
           cancelButtonText: 'cancel',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: 'Successful delete!'
-          });
+          let params = {
+            goodsId: this.goodsId,
+            cookie: this.cookie,
+            delete: true,
+        }
+        this.$axios.post('/api/deleteGoodsInfo/',
+                qs.stringify(params)
+        ).then(res => {
+          const ans = JSON.parse(res.data)
+          if(ans.validation){
+            this.$message.success(ans.mes)
+            this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+          } else {
+            this.$message.error(ans.mes)
+          }
+        })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -242,6 +265,11 @@
           this.desc = dataDict.desc
           this.category = dataDict.category
           this.imgList=dataDict.imgList
+          this.form.productName = this.name
+          this.form.category = this.category
+          this.form.introduction = this.desc
+          this.form.inventory = this.inventory
+          this.form.price = this.price
         })
 
       }

@@ -1,35 +1,5 @@
 <template>
   <div>
-    <!--    <el-input-->
-    <!--    type="text"-->
-    <!--    placeholder="title"-->
-    <!--    v-model="title"-->
-    <!--    maxlength="10"-->
-    <!--    show-word-limit>-->
-    <!--    </el-input>-->
-    <!--      <el-input-->
-    <!--    type="text"-->
-    <!--    placeholder="description"-->
-    <!--    v-model="description"-->
-    <!--    maxlength="200"-->
-    <!--    show-word-limit>-->
-    <!--    </el-input>-->
-
-    <!--      //商品选择-->
-    <!--      <div>-->
-    <!--        <el-select v-model="cate" placeholder="请选择" @change="changeProduct($event)">-->
-    <!--          <el-option-->
-    <!--              v-for="item in options"-->
-    <!--              :key="item.value"-->
-    <!--              :label="item.label"-->
-    <!--              :value="item.value">-->
-    <!--          </el-option>-->
-    <!--        </el-select>-->
-    <!--      </div>-->
-    <!--      <div>-->
-    <!--&lt;!&ndash;  这是原来的代码，之后的都是我测试的代码<el-button type="danger" round @click="submitImg">release</el-button>&ndash;&gt;-->
-    <!--        <el-button type="danger" round @click="submitImg">release</el-button>-->
-    <!--      </div>-->
     <el-container>
       <el-header>
         <el-page-header @back="goBack()" content="Release Page"></el-page-header>
@@ -43,7 +13,7 @@
               <div class="img">
                 <div class="upload">
                   <div class="upload_warp_left" @click="fileClick">
-                    <Button icon="ios-cloud-upload-outline" class="btn btn-success">上传图片</Button>
+<!--                    <Button icon="ios-cloud-upload-outline" class="btn btn-success"></Button>-->
                   </div>
                   <div class="upload_warp_text">
                     选中{{ imgList.length }}张文件，共{{ bytesToSize(this.size) }}

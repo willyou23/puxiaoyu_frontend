@@ -22,8 +22,9 @@
 <!--                </el-form-item>-->
                 <!--按钮区域-->
                 <el-form-item class="btns" >
-                    <el-button type="primary" @click="submitlogin">登录</el-button>
-                    <el-button type="info" @click="createAccount">注册</el-button>
+                    <el-button type="primary" @click="cancel">cancel</el-button>
+                    <el-button type="primary" @click="submitlogin">login</el-button>
+                    <el-button type="info" @click="createAccount">register</el-button>
                 </el-form-item>
             </el-form>
     </div>
@@ -47,9 +48,9 @@
                 checked: true,
                 rules:{
                     username: [{required:true,message:'请输入用户名',trigger:'blur'},
-                        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }],
+                        { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }],
                     password:[{required:true,message:'请输入密码',trigger:'blur'},
-                        { min: 6, max: 10, message: '长度在 6 到 10 个数字', trigger: 'blur' }],
+                        { min: 6, max: 20, message: '长度在 6 到 20 个数字', trigger: 'blur' }],
                     code: [{required:true,message:'请输入验证码',trigger:'blur'}],
                 }
             }
@@ -87,6 +88,9 @@
           createAccount(){
               this.$router.push({ path:'/createAccount'})
           },
+          cancel(){
+              this.$router.push({ path:'/'})
+          }
         }
     }
 

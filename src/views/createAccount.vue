@@ -28,7 +28,8 @@
 <!--                </el-form-item>-->
                 <!--按钮区域-->
                 <el-form-item class="btns" >
-                    <el-button type="primary" @click="submitInfo">确认注册</el-button>
+                    <el-button type="primary" @click="cancel">cancel</el-button>
+                    <el-button type="primary" @click="submitInfo">confirm</el-button>
                 </el-form-item>
             </el-form>
     </div>
@@ -53,7 +54,7 @@
                 checked: true,
                 rules:{
                     username: [{required:true,message:'请输入用户名',trigger:'blur'},
-                        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }],
+                        { min: 6, max: 20, message: '长度在 3 到 10 个字符', trigger: 'blur' }],
                     email: [{required:true,message:'请输入email',trigger:'blur'},
                         { min: 6, max: 40, message: '长度在 6 到 30 个字符', trigger: 'blur' }],
                     password:[{required:true,message:'请输入密码',trigger:'blur'},
@@ -92,7 +93,10 @@
                   return false;
               }
             });
-            }
+            },
+          cancel(){
+              this.$router.push({ path:'/login'})
+          }
         }
     }
 

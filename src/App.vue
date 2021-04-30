@@ -1,24 +1,24 @@
 <template>
   <div id="app">
-    <tab-bar>
-      <div class="logo">
-        <img src="~@/assets/logo.png" alt="">
-        浦小鱼
-      </div>
+<!--    <tab-bar>-->
+<!--      <div class="logo">-->
+<!--        <img src="~@/assets/logo.png" alt="">-->
+<!--        浦小鱼-->
+<!--      </div>-->
 
-      <tab-bar-item path="/">
-        <div slot="item-text">Home Page</div>
-      </tab-bar-item>
-      <tab-bar-item path="/template">
-        <div slot="item-text">template</div>
-      </tab-bar-item>
-      <tab-bar-item path="/profile">
-        <div slot="item-text">Profile</div>
-      </tab-bar-item>
-      <tab-bar-item path="/">
-        <div slot="item-text">联系客服</div>
-      </tab-bar-item>
-    </tab-bar>
+<!--      <tab-bar-item path="/">-->
+<!--        <div slot="item-text">Home Page</div>-->
+<!--      </tab-bar-item>-->
+<!--      <tab-bar-item path="/template">-->
+<!--        <div slot="item-text">template</div>-->
+<!--      </tab-bar-item>-->
+<!--      <tab-bar-item path="/profile">-->
+<!--        <div slot="item-text">Profile</div>-->
+<!--      </tab-bar-item>-->
+<!--      <tab-bar-item path="/">-->
+<!--        <div slot="item-text">联系客服</div>-->
+<!--      </tab-bar-item>-->
+<!--    </tab-bar>-->
 
     <router-view></router-view>
 
@@ -26,14 +26,14 @@
 </template>
 
 <script>
-  import TabBar from "@/components/tabbar/tabBar";
-  import TabBarItem from "@/components/tabbar/tabBarItem";
+  // import TabBar from "@/components/tabbar/tabBar";
+  // import TabBarItem from "@/components/tabbar/tabBarItem";
   export default {
     name: "App",
-    components: {
-      TabBar,
-      TabBarItem
-    },
+    // components: {
+    //   TabBar,
+    //   TabBarItem
+    // },
   }
 </script>
 

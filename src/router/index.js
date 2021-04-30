@@ -11,6 +11,7 @@ import Template from "@/views/template";
 import Trade from "@/views/Trade";
 import UploadPicture from "@/views/UploadPicture";
 import ChooseCategory from "@/views/ChooseCategory";
+import PaySuccess from "@/views/PaySuccess";
 
 Vue.use(VueRouter)
 
@@ -67,10 +68,15 @@ const routes = [
     path: '/ChooseCategory',
     name: 'ChooseCategory',
     component: ChooseCategory
-  }
+  },{
+        path: '/pay/success',
+        name: 'pay-success',
+        component: PaySuccess
+    }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 

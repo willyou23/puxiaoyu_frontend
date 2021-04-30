@@ -213,9 +213,6 @@ export default {
       if (value === '') {
         callback(new Error('Please enter the password'));
       } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass');
-        }
         callback();
       }
     };
@@ -264,13 +261,13 @@ export default {
 
       rules: {
         pass: [
-          {validator: validatePass, trigger: 'blur'}
-        ],
-        checkPass: [
           {validator: validatePass1, trigger: 'blur'}
         ],
-        oldPass: [
+        checkPass: [
           {validator: validatePass2, trigger: 'blur'}
+        ],
+        oldPass: [
+          {validator: validatePass, trigger: 'blur'}
         ]
       },
       userInfo: {

@@ -223,9 +223,8 @@ export default {
               // console.log(ans)
               if (res.data.message == 3) {
                 window.open(res.data.pay_url)
-                this.amount = res.data.balance
-                this.$message.success({message: 'deposit Successful,Please Refresh the Interface ', duration: 0})
-
+                // this.amount = res.data.balance
+                this.$message.success({message: 'Please Refresh the Interface', duration: 0})
               } else {
                 this.$message.error(res.data.errmsg)
               }
@@ -235,32 +234,6 @@ export default {
             center: true,
             type: "warning",
           });
-          // ;
-          // console.log(this.$data)
-          // this.$axios.post('/api/alipay/page/', JSON.stringify(data))
-          //     .then((res) => {
-          //       console.log(res)
-          //       const ans = JSON.parse(res.data)
-          //       console.log(ans)
-          //       this.$message.success("成功啦")
-          //       this.dialogVisible = false
-          //      // const div = document.createElement('div')
-          //      //  /* 此处form就是后台返回接收到的数据 */
-          //      //  div.innerHTML = res.data.data.alipayInfo
-          //      //  document.body.appendChild(div)
-          //      //  document.forms[0].submit()
-          //
-          //     }).catch((err) => {
-          //       this.$message({
-          //         message: "网络故障，请检查网络",
-          //         center: true,
-          //         type: "warning",
-          //       });
-
-
-          // }
-          // )
-          // }
 
         })
 
