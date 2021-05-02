@@ -188,7 +188,11 @@ export default {
         this.$router.replace('/Login')
     },
     profile() {
+      if(this.cookie === ""){
+        this.$message.error("please login first")
+      } else{
         this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+      }
     },
     contact_us(){
           this.$alert('puxiaoyu@qq.com', 'E-mail', {

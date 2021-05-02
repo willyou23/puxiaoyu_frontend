@@ -167,10 +167,10 @@
             width="40%">
           <div>
             <el-radio-group v-model="category">
-              <el-radio-button label="costume" style="margin-top: 10px;margin-left: 40px"></el-radio-button>
-              <el-radio-button label="cosmetics" style="margin-top: 10px"></el-radio-button>
-              <el-radio-button label="electronic products" style="margin-top: 10px"></el-radio-button>
-              <el-radio-button label="commodity" style="margin-top: 10px"></el-radio-button>
+              <el-radio-button label="Costume" style="margin-top: 10px;margin-left: 40px"></el-radio-button>
+              <el-radio-button label="Cosmetics" style="margin-top: 10px"></el-radio-button>
+              <el-radio-button label="Electronics" style="margin-top: 10px"></el-radio-button>
+              <el-radio-button label="Others" style="margin-top: 10px"></el-radio-button>
             </el-radio-group>
             <el-button style="margin-top: 40px;margin-left: 140px" @click="uploadDialogVisible = false">取 消</el-button>
             <el-button style="margin-top: 40px;margin-left: 120px" type="primary" @click="submit">确 定</el-button>
@@ -289,7 +289,11 @@ export default {
       this.$router.replace('/Login')
     },
     profile() {
-      this.$router.push({path: '/profile', query: {cookie: this.userInfo.cookie}})
+      if(this.cookie === ""){
+        this.$message.error("please login first")
+      } else{
+        this.$router.push({path: '/profile', query: {cookie: this.userInfo.cookie}})
+      }
     },
     contact_us() {
       this.$alert('puxiaoyu@qq.com', 'E-mail', {
@@ -309,7 +313,7 @@ export default {
       this.passwordDialogVisible = true;
     },
     showProduct(row) {
-      this.$router.push({path: '/goodsDetail', query: {cookie: this.userInfo.cookie, goodsId: row.id}})
+      this.$router.push({path: '/goodsDetail', query: {cookie: this.userInfo.cookie, goodsId: row.id, isSeller: true}})
     },
     showOrder(row) {
       this.$router.push({path: '/order', query: {cookie: this.userInfo.cookie, orderId: row.id}})

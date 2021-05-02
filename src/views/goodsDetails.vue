@@ -54,10 +54,10 @@
         </div>
         <div class="operate_btn">
           <a class="buy_btn" @click="buy">立即购买</a>
-          <a class="add_cart">收藏</a>
-          <i class="el-icon-edit-outline" style="margin-left: 280px;margin-top: 10px; font-size: 25px"  @click="showProductInfo"></i>
+          <span v-if="isSeller">
+          <i class="el-icon-edit-outline" style="margin-left: 450px;margin-top: 10px; font-size: 25px"  @click="showProductInfo"></i>
           <i class="el-icon-delete" @click="open" v-if="isShow" style="float: right;margin-top: 10px; font-size: 25px" ></i>
-
+          </span>
         </div>
 
         </div>
@@ -118,6 +118,7 @@
     name: "goodsDetails",
     data: function () {
       return {
+        isSeller: false,
         productDialogVisible: false,
         url: [
           // 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
@@ -150,14 +151,18 @@
       }
     },
     methods: {
-      goHome() {
+    goHome() {
         this.$router.push({path: '/', query: {cookie: this.cookie}})
     },
     login() {
         this.$router.replace('/Login')
     },
     profile() {
+        if(this.cookie === ""){
+        this.$message.error("please login first")
+      } else{
         this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+      }
     },
     contact_us(){
           this.$alert('puxiaoyu@qq.com', 'E-mail', {
@@ -182,7 +187,7 @@
         this.productDialogVisible = true;
       },
       cancelInfoEdit() {
-        this.dialogVisible = false;
+        this.productDialogVisible = false;
       },
       confirmInfoEdit() {
         let params = {
@@ -209,9 +214,10 @@
             this.$message.success(dataDict.mes)
           } else {
             this.$message.error(dataDict.mes)
+
           }
         })
-        this.dialogVisible = false;
+        this.productDialogVisible = false;
       },
       open() {
         this.$confirm('This action will delete this post, whether to continue?', 'tip', {
@@ -249,6 +255,7 @@
       this.url = []
       this.goodsId = this.$route.query.goodsId
       this.cookie = this.$route.query.cookie
+      this.isSeller = this.$route.query.isSeller
       let params = {
         goodsId: this.$route.query.goodsId,
       }

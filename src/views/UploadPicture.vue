@@ -2,107 +2,136 @@
   <div>
     <el-container>
       <el-header>
-        <el-page-header @back="goBack()" content="Release Page"></el-page-header>
+        <div style="text-align: right;margin-right: 0">
+          <el-dropdown style="float: left">
+            <el-page-header
+                @back="goHome" style="margin-top: 20px" content="Personal Center" title="Back"></el-page-header>
+          </el-dropdown>
+          <el-dropdown>
+            <i class="el-icon-s-home" style="margin: 10px;font-size: 20px" @click="goHome"></i>
+          </el-dropdown>
+          <el-dropdown>
+            <i class="el-icon-s-promotion" style="margin: 10px;font-size: 20px"  @click="contact_us"></i>
+          </el-dropdown>
+          <el-dropdown>
+            <i class="el-icon-user" style="margin: 10px;font-size: 20px" ></i>
+            <el-dropdown-menu slot="dropdown" >
+              <el-dropdown-item>
+                <el-button size="medium" style="width: 120px" @click="login">Login</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button size="medium" style="width: 120px" @click="profile">Profile</el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </el-header>
+
+
       <div>
-        <el-form :rules="rules" ref="releaseForm">
+        <el-form>
           <div>
-            #开始照片上传
-          <el-form-item>
-            <div>
-              <div class="img">
-                <div class="upload">
-                  <div class="upload_warp_left" @click="fileClick">
-<!--                    <Button icon="ios-cloud-upload-outline" class="btn btn-success"></Button>-->
-                  </div>
-                  <div class="upload_warp_text">
-                    选中{{ imgList.length }}张文件，共{{ bytesToSize(this.size) }}
-                  </div>
-                  <div class="upload_warp" style="border: 1px solid white;">
-                    <div class="upload_warp_img" v-show="imgList.length!=0">
-                      <div class="upload_warp_img_div" v-for="(item,index) of imgList">
-                        <div class="upload_warp_img_div_top">
-                          <div class="upload_warp_img_div_text">
-                            {{ item.file.name }}
+            <el-form-item style="background-color: white; width: 100%; border: 1px" class="jianju">
+              <div>
+                <div class="img">
+                  <div class="upload">
+                    <div class="upload_warp_text" style="height: 70px;width: 100%" @click="fileClick">
+<!--                      <Button icon="ios-cloud-upload-outline" class="el-icon-plus" style="font-weight: bold">上传图片</Button>-->
+                      <span>点击选择图片</span>
+                      <br>
+                      <span>选中{{ imgList.length }}张文件，共{{ bytesToSize(this.size) }}</span>
+                    </div>
+<!--                    <div class="upload_warp_text">-->
+<!--                      选中{{ imgList.length }}张文件，共{{ bytesToSize(this.size) }}-->
+<!--                    </div>-->
+                    <div class="upload_warp" style="border: 1px solid white;">
+                      <div class="upload_warp_img" v-show="imgList.length!=0">
+                        <div class="upload_warp_img_div" style="float: left;margin-left: 10px" v-for="(item,index) of imgList">
+                          <div class="upload_warp_img_div_top">
+                            <div class="upload_warp_img_div_text">
+                              {{ item.file.name }}
+                            </div>
+                            <img :src="require('@/assets/x.jpg')" style="width:10px;height: 10px" class="upload_warp_img_div_del" @click="fileDel(index)">
                           </div>
-                          <img src="/static/img/x.png" class="upload_warp_img_div_del" @click="fileDel(index)">
+                          <img style="width: 200px;height: 200px;display: inline" :src="item.file.src">
                         </div>
-                        <img :src="item.file.src">
                       </div>
                     </div>
+                    <input @change="fileChange($event)" type="file" id="upload_file" multiple style="display: none"/>
                   </div>
-                  <input @change="fileChange($event)" type="file" id="upload_file" multiple style="display: none"/>
                 </div>
               </div>
-            </div>
-          </el-form-item>
-          #结束照片上传
+            </el-form-item>
           </div>
 
 
           <div>
-            <el-form-item prop="title">
+            <el-form-item  class="jianju">
               <el-input
                   type="text"
                   placeholder="title"
                   v-model="title"
-                  maxlength="10"
+                  maxlength="50"
                   show-word-limit
               >
               </el-input>
             </el-form-item>
 
-            <el-form-item prop="desc">
-              <el-input
-                  id='desc'
-                  type="textarea"
-                  placeholder="please input good's description"
-                  v-model="desc"
-                  maxlength="200"
-                  show-word-limit
-              >
-              </el-input>
+            <el-form-item class="jianju" >
+
+              <textarea autocomplete="off" placeholder="Please input good's description"
+                        maxlength="200" class="text" v-model="desc">
+
+              </textarea>
+
             </el-form-item>
           </div>
 
 
 
           <table>
-            <div>
+            <tr>
               <th>
-                <el-form-item prop="price">
-                  <div style="white-space: nowrap; width: 40%">
-                    <input class="price"
-                           ref="content"
-                           type="text" :disabled="disabled"
-                           @input="handleAmountChange"
-                           v-model.number.trim="totalval"
-                           placeholder="please input price"
-                    />
-                  </div>
-                </el-form-item>
+                <div>
+                  <el-form-item>
+                    <div>
+                      <input class="price"
+                             ref="content"
+                             type="text" :disabled="disabled"
+                             @input="handleAmountChange"
+                             v-model.number.trim="totalval"
+                             placeholder="please input price"
+                      />
+                    </div>
+                  </el-form-item>
+                </div>
               </th>
-            </div>
-            <div>
-              <th>
-                <el-form-item>
-                  <div id="num" style="display: inline-block">
-                    input inventory
-                    <el-input-number
-                        v-model="inventory"
-                        :min="1" :max="10"
-                        label="input inventory"
-                    ></el-input-number>
-                  </div>
-                </el-form-item>
+
+              <th style="padding-left: 300px;width: 500px">
+                <div>
+                  <el-form-item>
+                    <div id="num" style="display: inline-block">
+                      <el-input-number
+                          v-model="inventory"
+                          :min="1" :max="10"
+                          label="input inventory"
+                      ></el-input-number>
+                    </div>
+                  </el-form-item>
+                </div>
               </th>
-            </div>
+            </tr>
           </table>
 
 
-          <div>
-            <Button type="primary" @click="submit">提交</Button>
+          <div style="margin: 20px 300px">
+            <el-button style="width: 150px" type="danger" round @click="submit">release</el-button>
+            <el-button style="margin-left: 300px; width: 150px" type="primary" round @click="profile">cancel</el-button>
           </div>
+<!--          <div style="margin: 20px 300px">-->
+<!--            <Button type="primary" style="width: 150px" @click="submit">提交</Button>-->
+<!--            <Button style="margin-left: 300px; width: 150px" type="primary" @click="goMine">cancel</Button>-->
+<!--          </div>-->
         </el-form>
       </div>
 
@@ -114,29 +143,13 @@
 
 <script>
 export default {
+  name: "UploadPicture",
   data() {
     return {
       title: '',
       imgList: [],
       backImgList: [],
       size: 0,
-
-
-      //   options: [{
-      //   value: 'opt1',
-      //   label: 'costume'
-      // }, {
-      //   value: 'opt2',
-      //   label: 'cosmetics'
-      // }, {
-      //   value: 'opt3',
-      //   label: 'electronic products'
-      // }, {
-      //   value: 'opt4',
-      //   label: 'commodity'
-      // }],
-      // cate: '',
-
       desc: '',
       dialogImageUrl: '',
       dialogVisible: false,
@@ -145,61 +158,62 @@ export default {
       inventory: 1,
       totalval: '',
       cookie: this.$route.query.cookie,
-
-      rules: {
-        title: [{required: true, message: 'please input title', trigger: 'blur'}],
-        desc: [{required: true, message: 'please input description', trigger: 'blur'}],
-        price: [{required: true, message: 'please input price', trigger: 'blur'}],
-      },
-
     }
   },
   methods: {
+
+    goHome() {
+        this.$router.push({path: '/', query: {cookie: this.cookie}})
+    },
+    login() {
+        this.$router.replace('/Login')
+    },
+    profile() {
+        if(this.cookie === ""){
+        this.$message.error("please login first")
+      } else{
+        this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+      }
+    },
+    contact_us(){
+          this.$alert('puxiaoyu@qq.com', 'E-mail', {
+              confirmButtonText: 'confirm',
+              callback: action => {
+                  this.$message({
+                      type: 'info',
+                      message: `action: ${ action }`
+                  });
+              }
+          });
+      },
     // changeProduct(event) {
     //      this.cate = event.target.value; //获取option对应的value值
     //      console.log("你选中了",this.cate)
     // },
     goBack() {
-      this.$router.replace('/submit')
+      if(this.cookie === ""){
+        this.$message.error("please login first")
+      } else{
+        this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+      }
     },
     handleAmountChange(e) {
       //过滤e字符
       e.target.value = e.target.value.replace("e", "");
-
       //判断输入是数字和.
       e.target.value = e.target.value.replace(/[^\d.]/g, "");
-
       this.totalval = e.target.value;
-
       // 必须保证第一个为数字而不是.
       this.totalval = this.totalval.replace(/^\./g, "0.");
-
       // 保证只有出现一个.而没有多个.
       this.totalval = this.totalval.replace(/\.{2,}/g, ".");
-
       // 保证.只出现一次，而不能出现两次以上
       e.target.value = e.target.value
           .replace(".", "$#$")
           .replace(/\./g, "")
           .replace("$#$", ".");
-
       // 只能输入两个小数
       this.totalval = this.totalval.replace(/^()*(\d+)\.(\d\d).*$/, "$1$2.$3");
-
-    },
-    // 查看图片
-    lookImg() {
-      this.$axios({
-        method: 'post',
-        headers: {'Content-Type': 'multipart/form-data'},
-        // headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
-        url: 'http://192.168.25.41:8081/material/MaterialInfo/getFiles',
-      })
-          .then((res) => {
-            console.log('res', res);
-            this.backImgList = res.data.result;
-          }).catch((error) => {
-      })
     },
     // 图片提交
     // mounted() {
@@ -227,8 +241,6 @@ export default {
       console.log("goodsId", goodsId);
       console.log("desc", desc);
       console.log("files", files);
-
-
       let formData = new FormData();
       formData.append('goodsId', goodsId);
       formData.append('name', name);
@@ -240,7 +252,6 @@ export default {
       for (var key in files) {
         formData.append('files', files[key].file);
       }
-
       // formData.append('files',this.imgList[0].file);
       console.log(formData)
       this.$axios({
@@ -310,166 +321,55 @@ export default {
       el.preventDefault();
       this.fileList(el.dataTransfer.files);
     }
-  }
+  },
 
 }
 </script>
 
 <style scoped>
-.upload_warp_img_div_del {
-  position: absolute;
-  top: 6px;
-  width: 16px;
-  right: 4px;
-}
-
-.upload_warp_img_div_top {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.4);
-  line-height: 30px;
-  text-align: left;
-  color: #fff;
-  font-size: 12px;
-  text-indent: 4px;
-}
-
-.upload_warp_img_div_text {
-  white-space: nowrap;
-  width: 80%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.upload_warp_img_div img {
-  max-width: 100%;
-  max-height: 100%;
-  vertical-align: middle;
-}
-
-.upload_warp_img_div {
-  position: relative;
-  height: 100px;
-  width: 120px;
-  border: 1px solid #ccc;
-  margin: 0px 5px 5px 0px;
-  float: left;
-  line-height: 100px;
-  display: table-cell;
-  text-align: center;
-  background-color: #eee;
-  cursor: pointer;
-}
-
-.upload_warp_img {
-  border-top: 1px solid #D2D2D2;
-  padding: 5px 0 0 5px;
-  overflow: hidden
-}
-
-.upload_warp_text {
-  text-align: left;
-  margin-bottom: 5px;
-  padding-top: 5px;
-  text-indent: 14px;
-  border-top: 1px solid #ccc;
-  font-size: 14px;
-}
-
-.upload_warp_right {
-  float: left;
-  width: 57%;
-  margin-left: 2%;
-  height: 100%;
-  border: 1px dashed #999;
-  border-radius: 4px;
-  line-height: 130px;
-  color: #999;
-}
-
-.upload_warp_left button {
-  margin: 1px 5px 0px 0px;
-  cursor: pointer;
-}
-
-.upload_warp_left {
-  float: left;
-}
-
-.upload_warp_left .btn-success {
-  background: rgb(45, 140, 240);
-  color: #fff;
-}
-
-.upload_warp {
-  margin: 5px;
-}
-
-.upload {
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  background-color: #fff;
-  width: 770px;
-  box-shadow: 0px 1px 0px #ccc;
-  border-radius: 4px;
-}
-
-.img {
-  width: 770px;
-  text-align: center;
-}
-
-/* 查看 */
-.lookPng {
-  margin-top: 20px;
-  min-height: 30px;
-  height: 100%;
-}
-
 
 div {
-  width: 90%;
   margin: auto;
-  padding: 2px;
-}
-
-#desc {
-  height: 300px;
 }
 
 .price {
   height: 40px;
   margin: 10px 0;
+  width: 200px;
 }
-
 p {
   color: darkslategrey;
   margin-top: 10px;
-
 }
-
-.select {
-  width: 100%;
-  margin: 10px 30px;
+#num{
+  width: 50%
 }
-
-#num {
-  padding: 0;
-}
-
-.bottom {
-  width: 70%;
-
-}
-
 .el-container {
-  background-color: #E9EEF3;
+  background-color: rgba(255, 224, 141, 1);
 }
-
 .el-header {
-  background-color: #B3C0D1;
+  background-color: #ff9700;
+}
+table{
+  margin-left: 200px;
+}
+.jianju{
+  margin-top: 20px;
+}
+.el-textarea__inner{
+  min-height: 250px;
+}
+.text{
+
+  min-height: 300px;
+  width: 100%;
+  font-size: 15px;
+  border: #DCDFE6;
+
+
+
+
 }
 
 </style>
+
