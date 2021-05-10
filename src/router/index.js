@@ -12,6 +12,7 @@ import Trade from "@/views/Trade";
 import UploadPicture from "@/views/UploadPicture";
 import ChooseCategory from "@/views/ChooseCategory";
 import PaySuccess from "@/views/PaySuccess";
+import forgetPassword from "@/views/forgetPassword";
 
 Vue.use(VueRouter)
 
@@ -72,7 +73,12 @@ const routes = [
         path: '/pay/success',
         name: 'pay-success',
         component: PaySuccess
-    }
+    },
+    {
+        path: '/forgetPassword',
+        name: 'forgetPassword',
+        component: forgetPassword
+  }
 ]
 
 const router = new VueRouter({

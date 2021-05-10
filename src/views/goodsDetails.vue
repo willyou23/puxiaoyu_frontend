@@ -1,10 +1,10 @@
 <template>
   <div class="body">
     <el-header>
-            <div style="text-align: right;margin-right: 0">
+            <div style="text-align: right;margin-right: 0;background-color: #ff9700">
                 <el-dropdown style="float: left">
                     <el-page-header
-                            @back="goHome" style="margin-top: 20px" content="Personal Center" title="Back"></el-page-header>
+                            @back="goback" style="margin-top: 20px" content="Personal Center" title="Back"></el-page-header>
                 </el-dropdown>
                 <el-dropdown>
                     <i class="el-icon-s-home" style="margin: 10px;font-size: 20px" @click="goHome"></i>
@@ -40,9 +40,9 @@
 
       <div class="goods_detail_list fr">
         <h3>{{ name }}
-          <span class="desc"> 类别:{{ category }}</span>
-          <span class="kucun">库存：{{ inventory }}</span>
-          <span class="kucun">卖家：{{ seller }}</span>
+          <span class="desc"> Category:{{ category }}</span>
+          <span class="kucun"> | Inventory：{{ inventory }}</span>
+          <span class="kucun">Seller：{{ seller }} |</span>
           <!--          <span class="kucun">描述：{{ desc }}</span>-->
           <!--          <span class="kucun">库存：{{ inventory }}</span>-->
         </h3>
@@ -53,7 +53,7 @@
           <!--            <span class="oldprice"><em>28.8</em></span>-->
         </div>
         <div class="operate_btn">
-          <a class="buy_btn" @click="buy">立即购买</a>
+          <a class="buy_btn" @click="buy">Buy Now</a>
           <span v-if="isSeller">
           <i class="el-icon-edit-outline" style="margin-left: 450px;margin-top: 10px; font-size: 25px"  @click="showProductInfo"></i>
           <i class="el-icon-delete" @click="open" v-if="isShow" style="float: right;margin-top: 10px; font-size: 25px" ></i>
@@ -151,6 +151,9 @@
       }
     },
     methods: {
+    goback(){
+      this.$router.go(-1)
+    },
     goHome() {
         this.$router.push({path: '/', query: {cookie: this.cookie}})
     },
@@ -180,7 +183,20 @@
           alert("please login firstly")
         }
         else{
-          this.$router.push({path: '/trade', query: {cookie: this.cookie, goodsId: this.goodsId}})
+          let params = {
+            cookie: this.cookie,
+            goodsId: this.goodsId,
+        }
+        this.$axios.post('/api/validateId/',
+                qs.stringify(params)
+        ).then(res => {
+          const ans = JSON.parse(res.data)
+          if(ans.validation === true){
+            this.$router.push({path: '/trade', query: {cookie: this.cookie, goodsId: this.goodsId}})
+          } else {
+            this.$message.error("you cannot buy goods you sold !!!")
+          }
+        })
         }
       },
       showProductInfo() {

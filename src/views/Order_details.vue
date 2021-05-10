@@ -2,11 +2,11 @@
   <el-container>
     <!--页头-->
     <!--返回上一页-->
-    <el-header>
-      <div style="text-align: right;margin-right: 15%">
+    <el-header style="padding: 0">
+      <div style="text-align: right;margin-right: 0;background-color: #ff9700">
         <el-dropdown style="float: left">
           <el-page-header
-              @back="goHome" content="Build Order" title="Back"></el-page-header>
+              @back="goback" content="Build Order" title="Back"></el-page-header>
         </el-dropdown>
         <el-dropdown>
           <i class="el-icon-s-home" style="margin: 10px;font-size: 20px" @click="goHome"></i>
@@ -54,11 +54,12 @@
             <!--订单状态（已付款/已发货/已完成）-->
             <el-form-item label="Status">
               <!--未付款时显示未支付，finish/finished-->
-              <el-input v-if="order_detail.payment_status===false" readonly placeholder="Unpaid"></el-input>
-              <el-input v-else-if="order_detail.state===true" placeholder="Finished" readonly></el-input>
-              <el-input v-else placeholder="Unfinished" readonly></el-input>
+              <el-input v-if="order_detail.state===true" placeholder="Finished" readonly></el-input>
+              <el-input v-else-if="order_detail.send_state===true" readonly placeholder="wait to receive"></el-input>
+              <el-input v-else-if="order_detail.payment_status===true" readonly placeholder="Unsend"></el-input>
+              <el-input v-else-if="order_detail.payment_status===false" readonly placeholder="Unpaid"></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item v-if="order_detail.isCustomer">
               <el-button v-if="order_detail.payment_status===false" type="primary"
                          plain icon="el-icon-coin" @click="Pay" style="float: left">Pay
               </el-button>
@@ -123,7 +124,10 @@
                            @click="goHome()">Home
                 </el-button>
                 <el-button type="success" plain icon="el-icon-box" @click="haveGoods"
-                           style="height: 50%;width: 48%;margin: auto">Receive the goods
+                           style="height: 50%;width: 48%;margin: auto" v-if="order_detail.isCustomer">Receive the goods
+                </el-button>
+                <el-button type="success" plain icon="el-icon-box" @click="sendGoods"
+                           style="height: 50%;width: 48%;margin: auto" v-if="order_detail.isSeller">Send goods
                 </el-button>
               </el-main>
             </el-container>
@@ -145,7 +149,7 @@
                                step-strictly></el-input-number>
             </el-form-item>
             <!--customer能改的信息-->
-            <div v-if="order_detail.isCustomer===true">
+            <div v-if="order_detail.isCustomer">
               <el-form-item label="Receiver">
                 <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px"
                           type="text" v-model="modify_info.receiver"></el-input>
@@ -164,15 +168,12 @@
               </el-form-item>
             </div>
             <!--商家改动部分-->
-            <div v-if="order_detail.isCustomer===false">
-              <el-form-item label="Merchant Phone">
-                <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px"
-                          type="text" v-model="modify_info.merchant_phone"></el-input>
-              </el-form-item>
-              <el-form-item label="Total Price">
+            <div v-if="order_detail.isSeller">
+              <el-form-item label="Total Price" v-if="!order_detail.payment_status">
                 <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px"
                           type="text" v-model="modify_info.payment_amount"></el-input>
               </el-form-item>
+              <p v-if="order_detail.payment_status" style="color: #e72121">You can not make any modification</p>
             </div>
           </el-form>
         </div>
@@ -238,13 +239,15 @@ export default {
         merchant_phone: 'phone',
         state: false,//已完成未完成//3
         payment_status: false,//支付状态
+        send_state: false,
         name: 'title',//卡片上的标题
         payment_amount: 50,//支付总额
         receiver: 'Lin',
         receiver_phone: '8169096',
         location: 'RenMing Road',
         remark: '',
-        isCustomer: true,//是否是顾客
+        isCustomer: false,//是否是顾客
+        isSeller: false,//是否是顾客
       },
       goods_detail: {
         id: "",
@@ -265,6 +268,9 @@ export default {
     };
   },
   methods: {
+    goback(){
+      this.$router.go(-1)
+    },
     goHome() {
         this.$router.push({path: '/', query: {cookie: this.cookie}})
     },
@@ -289,42 +295,56 @@ export default {
       this.$router.push({path: '/goodsDetail', query: {cookie: this.cookie, goodsId: this.goods_detail.id}})
     },
     modify() {
-      this.dialogVisible = true;
+      if(this.order_detail.send_state){
+        this.$message.warning("Goods has been sent, you cannot modify information !!!")
+      }else{
+        this.dialogVisible = true;
+      }
     },
     cancelInfoEdit() {
       this.dialogVisible = false;
     },
     confirmInfoEdit() {
+      let params = {}
       if (this.order_detail.payment_status) {
         if (this.order_detail.isCustomer) {
-          this.order_detail.receiver = this.modify_info.receiver;
-          this.order_detail.receiver_phone = this.modify_info.receiver_phone;
-          this.order_detail.location = this.modify_info.location;
-          this.order_detail.remark = this.modify_info.remark;
+          params = {
+            cookie: this.cookie,
+            orderId: this.order_detail.orderID,
+            amount: this.order_detail.payment_amount,
+            receiver: this.modify_info.receiver,
+            receiverPhone: this.modify_info.receiver_phone,
+            address: this.modify_info.location,
+            remark: this.modify_info.remark,
+            quantity: this.order_detail.productQuantity,
+      }
         }
       } else {
         if (this.order_detail.isCustomer) {
-          this.order_detail.receiver = this.modify_info.receiver;
-          this.order_detail.receiver_phone = this.modify_info.receiver_phone;
-          this.order_detail.location = this.modify_info.location;
-          this.order_detail.remark = this.modify_info.remark;
-          this.order_detail.productQuantity = this.modify_info.number;
-          this.order_detail.payment_amount = this.goods_detail.price * 100 * this.modify_info.number / 100
+          params = {
+            cookie: this.cookie,
+            orderId: this.order_detail.orderID,
+            amount: this.goods_detail.price * 100 * this.modify_info.number / 100,
+            receiver: this.modify_info.receiver,
+            receiverPhone: this.modify_info.receiver_phone,
+            address: this.modify_info.location,
+            remark: this.modify_info.remark,
+            quantity: this.modify_info.number,
+      }
         } else {
-          // this.order_detail.merchant_phone = this.modify_info.merchant_phone;
-          this.order_detail.payment_amount = this.modify_info.payment_amount;
+          params = {
+            cookie: this.cookie,
+            orderId: this.order_detail.orderID,
+            amount: this.modify_info.payment_amount,
+            receiver: this.order_detail.receiver,
+            receiverPhone: this.order_detail.receiver_phone,
+            address: this.order_detail.location,
+            remark: this.order_detail.remark,
+            quantity: this.order_detail.productQuantity,
+      }
         }
       }
-      let params = {
-        cookie: this.cookie,
-        orderId: this.order_detail.orderID,
-        amount: this.order_detail.payment_amount,
-        receiver: this.order_detail.receiver,
-        receiverPhone: this.order_detail.receiver_phone,
-        address: this.order_detail.location,
-        remark: this.order_detail.remark,
-        quantity: this.order_detail.productQuantity
-      }
+
       this.$axios.post('/api/order/editOrder/',
           qs.stringify(params)
       ).then(res => {
@@ -333,9 +353,20 @@ export default {
         this.dialogVisible_pay = false;
         if (ans.validation) {//注意！！！
           this.$message.success(ans.mes)
+          this.order_detail.payment_amount = ans.totalPrice
+          this.order_detail.receiver = ans.receiver
+          this.order_detail.receiver_phone = ans.phoneNumber
+          this.order_detail.location = ans.address
+          this.order_detail.remark = ans.remark
+          this.order_detail.productQuantity = ans.quantity
         } else {
           this.$message.error(ans.mes)
         }
+        this.modify_info.number = this.order_detail.productQuantity;
+        this.modify_info.receiver = this.order_detail.receiver;
+        this.modify_info.receiver_phone = this.order_detail.receiver_phone;
+        this.modify_info.location = this.order_detail.location;
+        this.modify_info.remark = this.order_detail.remark;
       })
 
       this.dialogVisible = false;
@@ -409,7 +440,7 @@ export default {
 },
     haveGoods() {
       //已完成支付的订单才能确认收货
-      if (this.order_detail.payment_status) {
+      if (this.order_detail.send_state) {
         this.$confirm('Whether the goods have been delivered？', 'Hint', {
           confirmButtonText: 'YES',
           cancelButtonText: 'NO',
@@ -431,6 +462,53 @@ export default {
               this.$message.error(ans.mes)
             }
           })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Cancel'
+          });
+        });
+      } else {
+        this.$alert('Goods has not been sent', 'Unsend', {
+          confirmButtonText: 'OK',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${action}`
+            });
+          }
+        });
+      }
+    },
+    sendGoods() {
+      //已完成支付的订单才能确认收货
+      if (this.order_detail.payment_status) {
+        this.$confirm('Whether the goods have been sent？', 'Hint', {
+          confirmButtonText: 'YES',
+          cancelButtonText: 'NO',
+          type: 'warning'
+        }).then(() => {
+          if(this.order_detail.send_state){
+            this.$message.warning("you have sent it !!!")
+          }
+          else {
+            let params = {
+            cookie: this.cookie,
+            orderId: this.order_detail.orderID
+          }
+          this.$axios.post('/api/order/confirmSend/',
+              qs.stringify(params)
+          ).then(res => {
+            console.log(res.data)
+            const ans = JSON.parse(res.data)
+            this.order_detail.send_state = ans.validation
+            if (this.order_detail.send_state === true) {
+              this.$message.success(ans.mes)
+            } else {
+              this.$message.error(ans.mes)
+            }
+          })
+          }
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -473,11 +551,12 @@ export default {
         if (ans.validation === true) {
           this.goods_detail.id = ans.goodsId
           this.goods_detail.name = ans.goodsName//产品编号，不可修改，名称在卡片处
-          this.order_detail.productQuantity = ans.quantity //购买数量，未支付可修改
           // this.goods_detail.img = ans.img//产品第一张图片
           this.goods_detail.img = ans.img//产品第一张图片
-          console.log(ans.img[0])
           this.goods_detail.price = ans.price
+          this.goods_detail.stock = ans.goodsQuantity
+
+          this.order_detail.productQuantity = ans.quantity //购买数量，未支付可修改
           this.order_detail.date = ans.date//订单生成日期
           this.order_detail.customer = ans.customerName//消费者
           this.order_detail.customer_phone = ans.customerPhoneNumber
@@ -486,12 +565,15 @@ export default {
           this.order_detail.merchant_phone = ans.sellerPhoneNumber
           this.order_detail.state = ans.finished//已完成未完成
           this.order_detail.payment_status = ans.paid//支付状态
+          this.order_detail.send_state = ans.send
           this.order_detail.name = ans.goodsName//卡片上的标题
           this.order_detail.payment_amount = ans.totalPrice
           this.order_detail.receiver = ans.receiver
           this.order_detail.receiver_phone = ans.phoneNumber
           this.order_detail.location = ans.address
           this.order_detail.remark = ans.remark
+          this.order_detail.isCustomer = ans.isCustomer;
+          this.order_detail.isSeller = ans.isSeller;
 
           //  modified
           this.modify_info.remark = ans.remark
@@ -500,10 +582,12 @@ export default {
           this.modify_info.receiver = ans.receiver
           this.modify_info.payment_amount = ans.totalPrice
           this.modify_info.number = ans.quantity
+          this.modify_info.merchant_phone = ans.sellerPhoneNumber
         } else {
           this.$message.error("Get information error")
         }
       })
+
     }
   }
 }

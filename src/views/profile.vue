@@ -144,25 +144,25 @@
       <el-container>
         <el-header
             style="text-align: left; font-size: 20px; font-family: 幼圆; color: black;background-color: rgba(255, 224, 141, 1);margin-top: 15px">
-          <span>已发布商品</span>
+          <span>Released Goods</span>
           <el-button style="margin-left: 750px" icon="el-icon-plus" circle @click="showUploadTable"></el-button>
         </el-header>
         <el-main>
           <el-table
               :data="tableData" @row-click="showProduct" style="height: 700px">
-            <el-table-column prop="id" label="商品编号" align="left" width="150">
+            <el-table-column prop="id" label="Goods Id" align="left" width="150">
             </el-table-column>
-            <el-table-column prop="name" label="名字" align="left" width="180">
+            <el-table-column prop="name" label="Name" align="left" width="180">
             </el-table-column>
-            <el-table-column prop="category" label="类别" align="left" width="180">
+            <el-table-column prop="category" label="Category" align="left" width="180">
             </el-table-column>
-            <el-table-column prop="status" align="left" label="状态">
+            <el-table-column prop="status" align="left" label="Status">
             </el-table-column>
           </el-table>
         </el-main>
         <!--                select the  category of products-->
         <el-dialog
-            title="选择商品种类"
+            title="Please choose category"
             :visible.sync="uploadDialogVisible"
             width="40%">
           <div>
@@ -172,25 +172,25 @@
               <el-radio-button label="Electronics" style="margin-top: 10px"></el-radio-button>
               <el-radio-button label="Others" style="margin-top: 10px"></el-radio-button>
             </el-radio-group>
-            <el-button style="margin-top: 40px;margin-left: 140px" @click="uploadDialogVisible = false">取 消</el-button>
-            <el-button style="margin-top: 40px;margin-left: 120px" type="primary" @click="submit">确 定</el-button>
+            <el-button style="margin-top: 40px;margin-left: 140px" @click="uploadDialogVisible = false">Cancel</el-button>
+            <el-button style="margin-top: 40px;margin-left: 120px" type="primary" @click="submit">Confirm</el-button>
           </div>
         </el-dialog>
 
         <el-header
             style="text-align: left; font-size: 20px; font-family: 幼圆; color: black;background-color: rgba(255, 224, 141, 1)">
-          <span>历史订单</span>
+          <span>History Orders</span>
           <el-button style="margin-left: 750px" icon="el-icon-star-on" circle></el-button>
         </el-header>
         <el-main>
           <el-table :data="historyTableData" @row-click="showOrder" style="height: 700px">
-            <el-table-column prop="id" label="商品编号" align="left" width="150">
+            <el-table-column prop="id" label="Order Id" align="left" width="150">
             </el-table-column>
-            <el-table-column prop="name" label="商品名字" align="left" width="180">
+            <el-table-column prop="name" label="Name" align="left" width="180">
             </el-table-column>
-            <el-table-column prop="identity" label="身份" align="left" width="180">
+            <el-table-column prop="identity" label="Identity" align="left" width="180">
             </el-table-column>
-            <el-table-column prop="status" align="left" label="状态">
+            <el-table-column prop="status" align="left" label="Status">
             </el-table-column>
           </el-table>
         </el-main>
@@ -486,7 +486,7 @@ export default {
 }
 
 .el-card {
-  background-color: rgba(255, 224, 141, 1);
+  background-color: #ffc063;
   width: 400px;
   margin-left: 20px;
 }

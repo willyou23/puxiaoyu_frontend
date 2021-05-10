@@ -1,9 +1,11 @@
 <template>
     <div class="loginContainer">
-        <div class="login_box">
+
+       <div class="login_box">
+<!--           <div :style="conTop"> </div>-->
 <!--           头像区域-->
             <div class="avatar_box">
-                <img src="~@/assets/profile1.png" alt="">
+                <img class="img1" src="~@/assets/profile1.png" alt="">
             </div>
           <h1 class="title">Login</h1>
 <!--            表单区域-->
@@ -24,10 +26,20 @@
                 <el-form-item class="btns" >
                     <el-button type="primary" @click="cancel">cancel</el-button>
                     <el-button type="primary" @click="submitlogin">login</el-button>
-                    <el-button type="info" @click="createAccount">register</el-button>
+                    <el-button type="primary" @click="createAccount">register</el-button>
+<!--                    <el-button type="primary" @click="ForgetPassword">forgetpasswod</el-button>-->
                 </el-form-item>
+              <el-form-item class="btns" >
+                <el-link type="info" @click="ForgetPassword">Forget Passwod?</el-link>
+                </el-form-item>
+
             </el-form>
+
     </div>
+
+       <div class="back">
+         <img class = "img2"src="~@/assets/ee2ddf7b6a9d571148532947ad9b6a2.jpg">
+       </div>
     </div>
 </template>
 
@@ -38,7 +50,9 @@
     export default {
         name: "login",
         data() {
+
             return {
+
                 captchaUrl: '',
                 loginForm: {
                     username: '',
@@ -54,6 +68,7 @@
                     code: [{required:true,message:'请输入验证码',trigger:'blur'}],
                 }
             }
+
         },
         methods:{
             submitlogin()
@@ -90,7 +105,11 @@
           },
           cancel(){
               this.$router.push({ path:'/'})
+          },
+          ForgetPassword(){
+              this.$router.push({ path:'/forgetPassword'})
           }
+
         }
     }
 
@@ -103,13 +122,18 @@
     }
 
     .loginContainer{
-     background-color: #2b4b6b;
-        height: 100%;
+     /*background-color: #2b4b6b;*/
+     /*   width: 1590px;*/
+        /*height: 300px;*/
+        /*width: 100%;*/
+        /*height: 50%;*/
+        /*top:50%;*/
+        /*background-size: 100%,100%;*/
     }
 
     .login_box{
-        width: 450px;
-        height: 300px;
+        width: 400px;
+        height: 350px;
         background-color: #ffffff;
         border-radius: 3px;
         position: absolute;
@@ -117,6 +141,7 @@
         top: 50%;
         transform: translate(-50%,-50%);
         box-shadow: 0 0 1px;}
+
 
     .avatar_box{
         height: 100px;
@@ -130,11 +155,23 @@
         transform: translate(-50%,-65%);
         background-color: #ffffff;
     }
-    img{
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
+   img {
+
+        /*border-radius: 50%;*/
         background-color: #eeeeee}
+
+   .img1{
+      width: 100%;
+     height: 100%;
+     border-radius: 50%;
+
+   }
+
+    .img2 {
+        width: 100%;
+        height:3%;
+
+        }
 
     .btns{
         display: flex;

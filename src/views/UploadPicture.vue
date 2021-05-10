@@ -37,9 +37,9 @@
                   <div class="upload">
                     <div class="upload_warp_text" style="height: 70px;width: 100%" @click="fileClick">
 <!--                      <Button icon="ios-cloud-upload-outline" class="el-icon-plus" style="font-weight: bold">上传图片</Button>-->
-                      <span>点击选择图片</span>
+                      <span>click to choose the picture</span>
                       <br>
-                      <span>选中{{ imgList.length }}张文件，共{{ bytesToSize(this.size) }}</span>
+                      <span>You pick {{ imgList.length }} images，{{ bytesToSize(this.size) }} in all</span>
                     </div>
 <!--                    <div class="upload_warp_text">-->
 <!--                      选中{{ imgList.length }}张文件，共{{ bytesToSize(this.size) }}-->
