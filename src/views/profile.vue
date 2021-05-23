@@ -16,7 +16,10 @@
           <i class="el-icon-user" style="margin: 10px;font-size: 20px"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <el-button size="medium" style="width: 120px" @click="login">Login</el-button>
+              <el-button v-show="cookie===''" size="medium" style="width: 120px" @click="login">Login</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button v-show="cookie!==''" size="medium" style="width: 120px" @click="logout">Logout</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button size="medium" style="width: 120px" @click="profile">Profile</el-button>
@@ -86,7 +89,7 @@
           width="50%">
 
         <div>
-          <el-form ref="form" :model="form" label-width="120px">
+          <el-form ref="form" :model="form" label-width="130px">
             <el-form-item label="User Name">
               <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px"
                         type="text" v-model="form.username"></el-input>
@@ -99,10 +102,25 @@
               <el-input style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px"
                         type="text" v-model="form.email"></el-input>
             </el-form-item>
-            <el-form-item label="Address">
+            <el-form-item label="Address123">
               <el-input style="display: flex; justify-content: left; margin-top: 5px" type="text"
                         v-model="form.address"></el-input>
             </el-form-item>
+            <el-select  placeholder="please choose the security question" v-model="value"
+                         style=" margin-top: 5px;margin-bottom: 20px; margin-left: 130px; width: 535px">
+                  <el-option
+                  v-for="item in options"
+                    :key="item.value "
+                    :label="item.label"
+                    :value="item.value ">
+                  </el-option>
+            </el-select>
+            <el-form-item  label="Answer" >
+                <el-input  style="display: flex; justify-content: left; margin-top: 5px;margin-bottom: 5px" prop="answer"
+                           type="text" v-model="form.securityAnswer"  ></el-input>
+            </el-form-item>
+
+
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
@@ -204,7 +222,6 @@
 <script>
 import qs from "qs";
 import Prepaid from "../components/Prepaid";
-
 export default {
   name: "profile",
   components: {Prepaid},
@@ -216,7 +233,6 @@ export default {
         callback();
       }
     };
-
     const validatePass1 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Please enter the password'));
@@ -226,7 +242,6 @@ export default {
         callback();
       }
     };
-
     const validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('Please enter the password again'));
@@ -236,29 +251,36 @@ export default {
         callback();
       }
     };
-
     return {
       dialogVisible: false,
       passwordDialogVisible: false,
       uploadDialogVisible: false,
       category: '',
-      tableData: [],
-      historyTableData: [],
-
+      options: [{
+                    value: '1',
+                    label: 'when is your birthday?'
+                }, {
+                    value: '2',
+                    label: 'Which city were you born in?'
+                }, {
+                    value: '3',
+                    label: 'what is your first phone number?'
+                }],
+      value:'',
+      tableData: [""],
+      historyTableData: [""],
       form: {
         username: '',
         phoneNumber: '',
         email: '',
         address: '',
-
+        securityAnswer:''
       },
-
       ruleForm: {
         pass: '',
         checkPass: '',
         oldPass: '',
       },
-
       rules: {
         pass: [
           {validator: validatePass1, trigger: 'blur'}
@@ -268,7 +290,13 @@ export default {
         ],
         oldPass: [
           {validator: validatePass, trigger: 'blur'}
-        ]
+        ],
+        question: [
+            {required:true,message:'请选择问题',trigger:'blur'}
+        ],
+        answer: [
+            {required:true,message:'请输入答案',trigger:'blur'}
+        ],
       },
       userInfo: {
         username: "",
@@ -276,18 +304,24 @@ export default {
         email: "",
         address: "",
         cookie: "",
-
       },
     };
   },
-
   methods: {
     goHome() {
       this.$router.push({path: '/', query: {cookie: this.userInfo.cookie}})
     },
-    login() {
-      this.$router.replace('/Login')
+    login() {//我写的关于logout的代码////////////////////////////////////
+      // alert("Logout Successfully")
+        // this.$router.go(0)
+      this.$router.replace({path: '/Login'})
+
     },
+    logout() {
+      alert("Logout Successfully")
+      this.$router.replace({path: '/'})
+      // console.log("Blank执行")
+    },//到这里结束/////////////////////////////////////////////
     profile() {
       if(this.cookie === ""){
         this.$message.error("please login first")
@@ -322,7 +356,6 @@ export default {
     showUploadTable() {
       this.uploadDialogVisible = true;
     },
-
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -330,6 +363,7 @@ export default {
             cookie: this.userInfo.cookie,
             password: this.ruleForm.oldPass,
             newPassword: this.ruleForm.pass,
+
           }
           this.$axios.post('/api/resetPassword/',
               qs.stringify(params)
@@ -366,15 +400,16 @@ export default {
     // confirm to update information
     confirmInfoEdit() {
       this.dialogVisible = false
-
       // add judgement rule
-
       let params = {
         cookie: this.userInfo.cookie,
         username: this.form.username,
         phoneNumber: this.form.phoneNumber,
         email: this.form.email,
-        address: this.form.address
+        address: this.form.address,
+        securityAnswer: this.form.securityAnswer,
+        value: this.value,
+        // securityProblem:this.form.securityProblem,
       }
       this.$axios.post('/api/updateProfileInfo/',
           qs.stringify(params)
@@ -392,8 +427,10 @@ export default {
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
           this.form.address = this.userInfo.address
+
         } else {
-          this.$message.error("Update information error")
+          // this.$message.error("Update information error")
+          this.$message.error(ans.errmess)
         }
       })
           .catch(err => {
@@ -440,7 +477,6 @@ export default {
         }
       })
     }
-
   },
   mounted() {
     if (this.$route.query.cookie !== undefined) {
@@ -467,14 +503,14 @@ export default {
           this.form.phoneNumber = this.userInfo.phoneNumber
           this.form.email = this.userInfo.email
           this.form.address = this.userInfo.address
+          // this.value=ans.value
+          // this.form.securityAnswer=ans.securityAnswer
         } else {
           this.$message.error("Get information error")
         }
       })
     }
   }
-
-
 }
 </script>
 
@@ -484,16 +520,12 @@ export default {
   color: aliceblue;
   line-height: 60px;
 }
-
 .el-card {
   background-color: #ffc063;
   width: 400px;
   margin-left: 20px;
 }
-
 .el-aside {
   background-color: white;
 }
-
-
 </style>

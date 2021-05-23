@@ -38,6 +38,9 @@
             <p class="info"><b>OrderStatus：</b><span><span>{{ orderstatus }}</span></span></p>
 
             </div>
+            <el-dropdown>
+            <el-button class="returnbotton"type="primary" @click="goHome">Return profile</el-button>
+            </el-dropdown>
           </el-card>
         </el-col>
       </el-row>
@@ -74,7 +77,9 @@
 
               <p class="info"><b>Out_Trade_No:</b><span><span>{{ out_trade_no }}</span></span></p>
               <p class="info"><b>OrderStatus：Failed</b></p>
-
+            <el-dropdown>
+                <el-button class="returnbotton"type="primary" @click="goHome">Return profile</el-button>
+            </el-dropdown>
 
             </div>
            </el-card>
@@ -84,6 +89,54 @@
 
 
       </div>
+    <div v-if="num === '3'">
+      <div class="success-icon-tips">
+        <el-row>
+          <el-col :span="12" :offset="11">
+            <div class="grid-content bg-purple"></div>
+            <i class="el-icon-success"></i>
+          </el-col>
+        </el-row>
+      </div>
+
+      <div class="title">
+        <div class="success-tips">
+          <el-row>
+            <el-col>
+              <div class="grid-content bg-purple"></div>
+              <p class="info">
+                <i class="el-icon-loading" style="margin-left: 210px"></i>
+                <b style="margin-left: 20px">Pay Success, Page will Turn to Profile Page after ：</b>
+                <span><span>{{ count }}</span></span>
+              </p>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <el-row :gutter="20" justify="center">
+        <el-col :span="12" :offset="6">
+          <div class="grid-content bg-purple"></div>
+           <el-card class="box-card" shadow="always">
+            <div class="order-info" >
+
+             <p class="info"><b>Trade No：</b><span>{{ result.trade_no }}</span></p>
+            <p class="info"><b>Trade No：</b><span>{{ result.out_trade_no }}</span></p>
+            <p class="info"><b>Pay Time：</b><span><span>{{ result.timestamp }}</span></span></p>
+            <p class="info"><b>Total Amount：</b><span><span>{{ result.total_amount }}</span></span></p>
+            <p class="info"><b>OrderStatus：</b><span><span>Finesed</span></span></p>
+            </div>
+            <el-dropdown>
+          <el-button class="returnbotton"type="primary" @click="goHome">Return profile</el-button>
+            </el-dropdown>
+           </el-card>
+
+        </el-col>
+      </el-row>
+
+
+      </div>
+
+
     </div>
 
 
@@ -105,7 +158,7 @@ export default {
       cookie: "",
       intervalId: null,
       count: "",
-      out_trade_no:""
+      out_trade_no: ""
     };
   },
 
@@ -114,13 +167,22 @@ export default {
     this.returnprofile()
     this.$axios('/api/alipay/page2/' + decodeURI(location.search)
     ).then(response => {
-      // console.log(this.num)
-
-      // console.log(response.data);
       if (response.data.num == '1') {
         // this.$message.success(response.data.errmesage)
         // this.$message.success({message: response.data.errmesage, duration: 0})
-
+        this.$message.success(response.data.succmess)
+        this.result = response.data.result
+        this.num = response.data.num
+        console.log(this.num)
+        this.orderstatus = response.data.orderstatus
+        this.cookie = response.data.cookie
+      } else if (response.data.num == '3') {
+        this.num = response.data.num
+        console.log(this.num)
+        // console.log(this.cood)
+        // this.$message.error(response.data.errmesage)
+        this.$message.success(response.data.succmess)
+        this.out_trade_no = response.out_trade_no
         this.result = response.data.result
         this.num = response.data.num
         console.log(this.num)
@@ -131,7 +193,8 @@ export default {
         console.log(this.num)
         // console.log(this.cood)
         this.$message.error(response.data.errmesage)
-        this.out_trade_no=response.out_trade_no
+        // this.$message.success(response.data.sucmess)
+        this.out_trade_no = response.out_trade_no
         this.cookie = response.data.cookie
       }
     }).catch(() => {
@@ -140,26 +203,31 @@ export default {
     })
   },
   methods: {
+    goHome() {
+      this.$router.push({path: '/profile', query: {cookie: this.cookie}})
+    },
+
     returnprofile() {
-    const timejump = 5;
-    if (!this.timer) {
-      this.count = timejump;
-      this.show = false;
-      this.timer = setInterval(() => {
-        if (this.count > 0 && this.count <= timejump) {
-          this.count--;
-        } else {
-          this.show = true;
-          clearInterval(this.timer);
-          this.timer = null;
-          //跳转的页面写在此处
-          this.$router.push({path: '/profile', query: {cookie: this.cookie}});
-        }
-      }, 1000)
-    }
+      const timejump = 5;
+      if (!this.timer) {
+        this.count = timejump;
+        this.show = false;
+        this.timer = setInterval(() => {
+          if (this.count > 0 && this.count <= timejump) {
+            this.count--;
+          } else {
+            this.show = true;
+            clearInterval(this.timer);
+            this.timer = null;
+            //跳转的页面写在此处
+            this.$router.push({path: '/profile', query: {cookie: this.cookie}});
+          }
+        }, 1000)
+
+
+      }
 
     }
-
   }
 }
 </script>
@@ -261,6 +329,11 @@ export default {
   font-size: 26px;
   color: #ff3e3e;
 }
+
+.returnbotton{
+  margin-left: 400px;
+}
+
 
 
 

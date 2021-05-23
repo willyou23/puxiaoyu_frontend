@@ -15,9 +15,15 @@
         <el-dropdown>
           <i class="el-icon-user" style="margin: 10px;font-size: 20px" ></i>
           <el-dropdown-menu slot="dropdown" >
+            <!--            赵文轩的前端作业-->
             <el-dropdown-item>
-              <el-button size="medium" style="width: 120px" @click="login">Login</el-button>
+              <el-button v-show="cookie===''" size="medium" style="width: 120px" @click="login">Login</el-button>
             </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button v-show="cookie!==''" size="medium" style="width: 120px" @click="logout">Logout</el-button>
+            </el-dropdown-item>
+
+<!--            到这里结束   -->
             <el-dropdown-item>
               <el-button size="medium" style="width: 120px" @click="profile">Profile</el-button>
             </el-dropdown-item>
@@ -55,7 +61,7 @@
       </div>
 
       <div class="search">
-        <input type="text" placeholder="请输入..." v-model="searchName">
+        <input type="text" placeholder="please input..." v-model="searchName">
         <Button type="primary" @click="submit">search</Button>
       </div>
     </div>
@@ -152,9 +158,17 @@ export default {
     goHome() {
       this.$router.push({path: '/', query: {cookie: this.cookie}})
     },
-    login() {
-      this.$router.replace('/Login')
+    login() {//我写的关于logout的代码////////////////////////////////////
+      // alert("Logout Successfully")
+        // this.$router.go(0)
+      this.$router.replace({path: '/Login'})
+
     },
+    logout() {
+      alert("Logout Successfully")
+      this.$router.replace({path: '/'})
+      // console.log("Blank执行")
+    },//到这里结束/////////////////////////////////////////////
     profile() {
       if(this.cookie === ""){
         this.$message.error("please login first")
